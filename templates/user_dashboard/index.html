@@ -1,0 +1,157 @@
+{% extends "layouts/main.html" %}
+{% block title %}Dashboard | Food management{% endblock title %}
+{% load static %}
+{% load mathfilters %}
+{% block content %}
+
+{% comment %} side-nav {% endcomment %}
+{% include "layouts/side_nav.html" %}
+
+<section class="main_content dashboard_part">
+
+    {% comment %} nav {% endcomment %}
+    {% include "layouts/nav.html" %}
+
+    <div class="main_content_iner">
+
+        {% comment %} content {% endcomment %}
+        <div class="container-fluid p-0 sm_padding_15px">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="dashboard_header mb_50">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="dashboard_header_title">
+                                    <h3> {{ month }} Dashboard</h3>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="dashboard_breadcam text-end">
+                                    <p><a href="index.html">Dashboard</a> <i class="fas fa-caret-right"></i></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags != 'success' %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>{{ message }}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>{{ message }}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="col-lg-8 col-xl-8">
+                    <div class="white_box mb_30">
+                        <div class="box_header">
+                            <div class="main-title">
+                                <h3 class="mb_25">Monthly Income stats for November 2020</h3>
+                            </div>
+                            <div class="float-end d-none d-md-inline-block">
+                                <div class="btn-group mb-2" role="group">
+                                    <button type="button" class="btn btn-sm btn-light">Today</button>
+                                    <button type="button" class="btn btn-sm btn-light">Weekly</button>
+                                    <button type="button" class="btn btn-sm btn-light">Monthly</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="line-column-chart2"></div>
+                        <div class="card_footer_white">
+                            <div class="row">
+                                <div class="col-sm-4 text-center">
+                                    <div class="d-inline-flex">
+                                        <h5 class="me-2">$12,253</h5>
+                                        <div class="text-success">
+                                            <i class="fas fa-caret-up font-size-14 line-height-2 me-2"> </i>2.2 %
+                                        </div>
+                                    </div>
+                                    <p class="text-muted text-truncate mb-0">This month</p>
+                                </div>
+                                <div class="col-sm-4 text-center">
+                                    <div class="mt-4 mt-sm-0">
+                                        <p class="mb-2 text-muted text-truncate"><i
+                                                class="fas fa-circle text-primary me-2 font-size-10 me-1"></i> This
+                                            Year :</p>
+                                        <div class="d-inline-flex align-items-center">
+                                            <h5 class="mb-0 me-2">$ 34,254</h5>
+                                            <div class="text-success">
+                                                <i class="fas fa-caret-up font-size-14 line-height-2 me-2"> </i>2.1
+                                                %
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 text-center">
+                                    <div class="mt-4 mt-sm-0">
+                                        <p class="mb-2 text-muted text-truncate"><i
+                                                class="fas fa-circle text-success font-size-10 me-1"></i> Previous
+                                            Year :</p>
+                                        <div class="d-inline-flex align-items-center">
+                                            <h5 class="mb-0">$ 32,695</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="list_counter_wrapper white_box mb_30 p-0 card_height_100">
+                        <div class="single_list_counter">
+                            <h3 class="deep_blue_2"><span class=" deep_blue_2">{{ user_total_bazar }}</span> &#2547; </h3>
+                            <p>Amar total bazar</p>
+                        </div>
+                        <div class="single_list_counter">
+                            <h3 class="deep_blue_2"><span class=" deep_blue_2">{{ user_total_meal }}</span></h3>
+                            <p>Amar total meal</p>
+                        </div>
+                        <div class="single_list_counter">
+                            <h3 class="deep_blue_2"><span class=" deep_blue_2 ">{{ total_meal }}</span></h3>
+                            <p>Total Meal</p>
+                        </div>
+                        <div class="single_list_counter">
+                            <h3 class="deep_blue_2"><span class=" deep_blue_2">{{ meal_rate }}</span> &#2547; </h3>
+                            <p>Meal rate</p>
+                        </div>
+                        <div class="single_list_counter">
+                            <h3 class="deep_blue_2"><span class=" deep_blue_2">{{ my_cost }}</span> &#2547; </h3>
+                            <p>My cost</p>
+                        </div>
+                        <div class="single_list_counter">
+                            {% if paid < 0 %}
+                            <h3 style="color:#33ea3c" class="">+<span style="color:#33ea3c" class=" ">{{ paid|abs }}</span> &#2547; </h3><p>Pabo</p>
+                            {% elif paid == 0 %}
+                            <h3 style="color:#33ea3c" class=""><span style="color:#33ea3c" class=" ">{{ paid|abs }}</span> &#2547; </h3><p>Neutral</p>
+                            {% else %}
+                            <h3 style="color:#C51230"  class="">-<span style="color:#C51230" class=" ">{{ paid|abs }}</span> &#2547; </h3><p>Dibo</p>
+                            {% endif %}
+                            
+                        </div>
+                        <div class="single_list_counter">
+                            <h3 class="deep_blue_2"><span class=" deep_blue_2">{{ total_bazar }}</span> &#2547; </h3>
+                            <p>Total Bazar</p>
+                        </div>
+                        <div class="single_list_counter">
+                            <h3 class="deep_blue_2"><span class=" deep_blue_2">{{ distinct_users }}</span> &#2547; </h3>
+                            <p>Total Mates</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% comment %} footer {% endcomment %}
+        {% include "layouts/footer.html" %}
+
+    </div>
+
+</section>
+
+{% endblock content %}

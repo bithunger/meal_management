@@ -1,0 +1,249 @@
+{% extends "layouts/main.html" %}
+{% block title %}Manage Meal | Food management{% endblock title %}
+{% load static %}
+{% block content %}
+
+{% comment %} side-nav {% endcomment %}
+{% include "layouts/side_nav.html" %}
+
+<section class="main_content dashboard_part">
+
+    {% comment %} nav {% endcomment %}
+    {% include "layouts/nav.html" %}
+
+    <div class="main_content_iner">
+
+        {% comment %} content {% endcomment %}
+        <div class="container-fluid p-0">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="dashboard_header mb_50">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="dashboard_header_title">
+                                    <h3>Add or Off Meal</h3>
+                                    <h3 style="color:#C51230" class=" ">Update meal before today 5.00 PM</h3>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="dashboard_breadcam text-end">
+                                    <p><a href="index.html">Dashboard</a> <i class="fas fa-caret-right"></i> add or off
+                                        meal
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags != 'success' %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>{{ message }}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>{{ message }}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="white_box mb_30">
+                                <form action="{% url 'add-or-off-meal' %}" class="theme-form" method="POST">
+                                    {% csrf_token %}
+                                    <div class="row g-5">
+                                        <div class="col-lg-6">
+                                            <div class="box_header ">
+                                                <div class="main-title">
+                                                    <h3 class="mb-0">Today: {{ today }} </h3>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12 mb_20">
+                                                    <div class="mb_20">
+                                                        <input type="number" name="extra_meal_dinner"
+                                                            class="form-control"
+                                                            placeholder="Add extra meal for dinner">
+                                                    </div>
+                                                    <div class="mb_20">
+                                                        <label class="h6 theme_color_4">Turn off my Dinner</label>
+                                                        <input name="off_dinner" value="True" type="checkbox">
+                                                    </div>
+
+                                                    <div class="mb_20">
+                                                        <textarea name="today_comment" class="form-control" rows="4"
+                                                            placeholder="Comments for today"></textarea>
+                                                    </div>
+                                                    
+                                                    {% if request.user.status %}
+                                                    <div class="badge bg-danger p-4 mb_20">
+                                                        <select class="form-control" name="off_from">
+                                                            <option value="0">Turn off my meal from --</option>
+                                                            <option value="today">From today dinner</option>
+                                                            <option value="tomorrow">From tomorrow Lunch</option>
+                                                        </select>
+                                                    </div>
+                                                    {% else %}
+                                                    <div class="badge bg-success p-3 mb_20">
+                                                        <div class="">
+                                                            <label class="h6">Turn On my meal</label>
+                                                            <input name="off_from" value="1" type="checkbox">
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn_1 full_width text-center">Submit</button>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="box_header ">
+                                                <div class="main-title">
+                                                    <h3 class="mb-0">Tomorrow: {{ tomorrow }}</h3>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12 mb_20">
+                                                    <div class="mb_20">
+                                                        <input type="number" name="extra_meal_lunch"
+                                                            class="form-control" placeholder="Add extra meal for lunch">
+                                                    </div>
+                                                    <div class="mb_20">
+                                                        <label class="h6 theme_color_4">Turn off my Lunch</label>
+                                                        <input name="off_lunch" value="True" type="checkbox">
+                                                    </div>
+
+                                                    <div class="mb_20">
+                                                        <textarea name="tomorrow_comment" class="form-control" rows="4"
+                                                            placeholder="Comments for tomorrow"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="white_box mb_30">
+                    <form action="{% url 'partial-off-meal' %}" class="theme-form" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="box_header ">
+                                    <div class="main-title">
+                                        <h3 class="mb-0">Partially meal off</h3>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 mb_20">
+                                        <div class="mb_20">
+                                            <div class="badge bg-danger p-4 mb_20">
+                                                <label class="h6">Select days--</label>
+                                                <select required class="form-control" name="partial_day_from">
+                                                    <option value="Saturday">Saturday</option>
+                                                    <option value="Sunday">Sunday</option>
+                                                    <option value="Monday">Monday</option>
+                                                    <option value="Tuesday">Tuesday</option>
+                                                    <option value="Wednesday">Wednesday</option>
+                                                    <option value="Thursday">Thursday</option>
+                                                    <option value="Friday">Friday</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="mb_20">
+                                            <label class="h6 theme_color_4">Turn off my Dinner</label>
+                                            <input name="partial_off_dinner" value="True" type="checkbox">
+                                        </div>
+                                        <div class="mb_20">
+                                            <label class="h6 theme_color_4">Turn off my Lunch</label>
+                                            <input name="partial_off_lunch" value="True" type="checkbox">
+                                        </div>
+                                    </div>
+                                    {% comment %} <div class="col-lg-9 mb_20">
+                                        <div class="white_box QA_section card_height_100">
+                                            <div class="box_header m-0">
+                                                <div class="main-title">
+                                                    <h3 class="m-0">Off meal according to days</h3>
+                                                </div>
+                                            </div>
+                                            <div class="QA_table ">
+                                                <table class="table lms_table_active2">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Day</th>
+                                                            <th scope="col">Meal name</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for item in partial %}
+                                                        <tr>
+                                                            <td>{{ item.day }}</td>
+                                                            <td>{{ item.meal }}</td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div> {% endcomment %}
+                                </div>
+                                <button type="submit" class="btn_1 full_width text-center">Submit</button>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="box_header ">
+                                    <div class="main-title">
+                                        <h3 class="mb-0">Off meal according to days</h3>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="white_box QA_section card_height_100">
+                                        <div class="QA_table ">
+                                            <table class="table lms_table_active2">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Day</th>
+                                                        <th scope="col">Meal name</th>
+                                                        <th scope="col">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for item in partial %}
+                                                    <tr>
+                                                        <td>{{ item.day }}</td>
+                                                        <td>
+                                                            {% if item.meal == 0 %}
+                                                            Dinner
+                                                            {% else %}
+                                                            Lunch
+                                                            {% endif %}
+                                                        </td>
+                                                        <td><a href="{% url 'partial-delete' item.id %}">Delete</a></td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% comment %} footer {% endcomment %}
+        {% include "layouts/footer.html" %}
+
+    </div>
+
+</section>
+
+{% endblock content %}

@@ -1,0 +1,66 @@
+{% extends "layouts/main.html" %}
+{% block title %}Add Bazar | Food management{% endblock title %}
+{% load static %}
+{% block content %}
+
+{% comment %} side-nav {% endcomment %}
+{% include "layouts/side_nav.html" %}
+
+<section class="main_content dashboard_part">
+
+    {% comment %} nav {% endcomment %}
+    {% include "layouts/nav.html" %}
+
+    <div class="main_content_iner">
+
+        {% comment %} content {% endcomment %}
+        <div class="container-fluid p-0">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="dashboard_header mb_50">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="dashboard_header_title">
+                                    <h3>Add Bazar</h3>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="dashboard_breadcam text-end">
+                                    <p><a href="index.html">Dashboard</a> <i class="fas fa-caret-right"></i> add bazar
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="white_box mb_30">
+                        <div class="box_header ">
+                            <div class="main-title">
+                                <h3 class="mb-0">Today: {{ today }}</h3>
+                            </div>
+                        </div>
+                        <form action="{% url 'add-bazar' %}" class="theme-form" method="POST">
+                            {% csrf_token %}
+                            <div class=" mb_20">
+                                <input required name="bazar" type="number" class="form-control" placeholder="Bazar ammount">
+                            </div>
+                            <div class="mb_20">
+                                <textarea required name="bazar_list" class="form-control" rows="4"
+                                    placeholder="Bazar list"></textarea>
+                            </div>
+                            <button type="submit" class="btn_1 full_width text-center">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% comment %} footer {% endcomment %}
+        {% include "layouts/footer.html" %}
+
+    </div>
+
+</section>
+
+{% endblock content %}

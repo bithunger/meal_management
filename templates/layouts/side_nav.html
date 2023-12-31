@@ -1,0 +1,70 @@
+{% load static %}
+<nav class="sidebar">
+    <div class="logo d-flex justify-content-between">
+        {% if request.user.is_authenticated and request.user.is_superuser %}
+        <a href="{% url 'admin-dashboard' %}"><img src="{% static 'img/logo22.png' %}" alt="brand logo" width="200"></a>
+        {% else %}
+        <a href="{% url 'dashboard' %}"><img src="{% static 'img/logo22.png' %}" alt="brand logo" width="200"></a>
+        {% endif %}
+        
+        <div class="sidebar_close_icon d-lg-none">
+            <i class="ti-close"></i>
+        </div>
+    </div>
+    <ul id="sidebar_menu">
+        {% if request.user.is_authenticated and request.user.is_superuser %}
+        <li class="{% if request.path == '/admin-dashboard/' %}mm-active{% endif %}">
+            <a href="{% url 'admin-dashboard' %}">
+                <img src="{% static 'img/menu-icon/dashboard.svg' %}" alt>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        {% else %}
+        <li class="{% if request.path == '/user-dashboard/' %}mm-active{% endif %}">
+            <a href="{% url 'dashboard' %}">
+                <img src="{% static 'img/menu-icon/dashboard.svg' %}" alt>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        {% endif %}
+        
+        <li class="{% if request.path == '/user-dashboard/manage-meal' or request.path == '/user-dashboard/total-meal' %}mm-active{% endif %}">
+            <a class="has-arrow" href="#" aria-expanded="false">
+                <img src="{% static 'img/menu-icon/3.svg' %}" alt>
+                <span>Amar Meal</span>
+            </a>
+            <ul>
+                <li><a class="{% if request.path == '/user-dashboard/manage-meal' %}active{% endif %}" href="{% url 'manage-meal' %}">Manage meal</a></li>
+                <li><a class="{% if request.path == '/user-dashboard/total-meal' %}active{% endif %}" href="{% url 'total-meal' %}">Total meal</a></li>
+            </ul>
+        </li>
+        <li class="{% if request.path == '/user-dashboard/add-bazar' or request.path == '/user-dashboard/total-bazar' %}mm-active{% endif %}">
+            <a class="has-arrow" href="#" aria-expanded="false">
+
+                <img src="{% static 'img/menu-icon/8.svg' %}" alt>
+                <span>Amar Bazar</span>
+            </a>
+            <ul>
+                <li><a class="{% if request.path == '/user-dashboard/add-bazar' %}active{% endif %}" href="{% url 'add-bazar' %}">Add Bazar</a></li>
+                <li><a class="{% if request.path == '/user-dashboard/total-bazar' %}active{% endif %}" href="{% url 'total-bazar' %}">Total Bazar</a></li>
+            </ul>
+        </li>
+        <li class="{% if request.path == '/user-dashboard/profile' or request.path == '/authentication/login' or request.path == '/authentication/signup' %}mm-active{% endif %}">
+            <a class="has-arrow" href="#" aria-expanded="false">
+                <img src="{% static 'img/menu-icon/2.svg' %}" alt>
+                <span>Pages</span>
+            </a>
+            <ul>
+                {% if request.user.is_authenticated %}
+                <li><a class="{% if request.path == '/authentication/logout' %}active{% endif %}" href="{% url 'logout' %}">Logout</a></li>
+                <li><a class="{% if request.path == '/user-dashboard/profile' %}active{% endif %}" href="{% url 'profile' %}">Profile</a></li>
+                {% comment %} <li><a href="#">Forgot Password</a></li> {% endcomment %}
+                <li><a href="#">Gallery</a></li>
+                {% else %}
+                <li><a class="{% if request.path == '/authentication/login' %}active{% endif %}" href="{% url 'login' %}">Login</a></li>
+                <li><a class="{% if request.path == '/authentication/signup' %}active{% endif %}" href="{% url 'signup' %}">Register</a></li>
+                {% endif %}
+            </ul>
+        </li>
+    </ul>
+</nav>

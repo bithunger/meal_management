@@ -1,0 +1,71 @@
+{% extends "layouts/main.html" %}
+{% block title %}Profile | Food management{% endblock title %}
+{% load static %}
+{% block content %}
+
+{% comment %} side-nav {% endcomment %}
+{% include "layouts/side_nav.html" %}
+
+<section class="main_content dashboard_part">
+
+    {% comment %} nav {% endcomment %}
+    {% include "layouts/nav.html" %}
+
+    <div class="main_content_iner">
+
+        {% comment %} content {% endcomment %}
+        <div class="container-fluid p-0">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="dashboard_header mb_50">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="dashboard_header_title">
+                                    <h3> Profile</h3>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="dashboard_breadcam text-end">
+                                    <p><a href="index.html">Dashboard</a> <i class="fas fa-caret-right"></i>
+                                        Profile</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="white_box mb_30">
+                        {% comment %} <div class="box_header ">
+                            <div class="main-title">
+                                <h3 class="mb-0">profile Box 4</h3>
+                            </div>
+                        </div> {% endcomment %}
+                        <div class="profile_card_5">
+                            <div class="cover-photo">
+                                <img src="media/{{ request.user.image }}" alt="{{ request.user.first_name }}" class="profile">
+                            </div>
+                            <form class="w-50" action="{% url 'profile' %}" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input class="form-control" type="file" name="image">
+                                <input class="btn btn-primary" type="submit" value="Upload profile image">
+                            </form>
+                            <h2 class="mt_20">{{ request.user.first_name }} {{ request.user.last_name }}</h2>
+                            <p class="about">Email: {{ request.user.email }} <br>
+                                Address: {{ request.user.address }} <br>
+                                Mobile: {{ request.user.mobile }}
+                            </p>
+                            <button class="msg-btn"><a style="color:white" class="" href="media/{{ request.user.nid_or_birth }}" target="_blank">NID or Birth</a></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% comment %} footer {% endcomment %}
+        {% include "layouts/footer.html" %}
+
+    </div>
+
+</section>
+
+{% endblock content %}
