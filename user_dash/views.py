@@ -62,6 +62,7 @@ def my_cost(meal, meal_rate):
 def dashboard(request):
     this_month = dateTime.date.today().month
     month = dateTime.date(1900, this_month, 1).strftime('%B')
+    year = datetime.now().year
     
     distinct_users = Daily_Meal.objects.filter(date__month=this_month).distinct().count()
     
@@ -87,6 +88,7 @@ def dashboard(request):
         'meal_rate':round(m_rate, 7),
         'my_cost':m_cost,
         'month':month,
+        'year':year,
         'paid':paid,
         'distinct_users':distinct_users
     }

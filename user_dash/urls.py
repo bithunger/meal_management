@@ -21,18 +21,18 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),
-    path('manage-meal', views.manage_meal, name='manage-meal'),
-    path('add_or_off_meal', views.add_or_off_meal, name='add-or-off-meal'),
-    path('total-meal', views.total_meal, name='total-meal'),
-    path('add-bazar', views.add_bazar, name='add-bazar'),
-    path('total-bazar', views.total_bazar, name='total-bazar'),
-    path('partial-off-meal', views.partial_off_meal, name='partial-off-meal'),
+    path('user-dashboard/manage-meal', views.manage_meal, name='manage-meal'),
+    path('user-dashboard/add_or_off_meal', views.add_or_off_meal, name='add-or-off-meal'),
+    path('user-dashboard/total-meal', views.total_meal, name='total-meal'),
+    path('user-dashboard/add-bazar', views.add_bazar, name='add-bazar'),
+    path('user-dashboard/total-bazar', views.total_bazar, name='total-bazar'),
+    path('user-dashboard/partial-off-meal', views.partial_off_meal, name='partial-off-meal'),
     
-    path('profile', views.profile, name='profile'),
+    path('user-dashboard/profile', views.profile, name='profile'),
     
-    path('partial-delete/<int:pk>', views.partial_delete, name='partial-delete'),
-    path('del-all-meal', views.delete_all_meal, name='delete_all_meal'),
-    path('del-all-bazar', views.delete_all_bazar, name='delete_all_bazar')
+    path('user-dashboard/partial-delete/<int:pk>', views.partial_delete, name='partial-delete'),
+    path('user-dashboard/del-all-meal', views.delete_all_meal, name='delete_all_meal'),
+    path('user-dashboard/del-all-bazar', views.delete_all_bazar, name='delete_all_bazar')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

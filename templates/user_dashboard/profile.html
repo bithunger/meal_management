@@ -42,7 +42,7 @@
                         </div> {% endcomment %}
                         <div class="profile_card_5">
                             <div class="cover-photo">
-                                <img src="media/{{ request.user.image }}" alt="{{ request.user.first_name }}" class="profile">
+                                <img src="/media/{{ request.user.image }}" alt="{{ request.user.first_name }}" class="profile">
                             </div>
                             <form class="w-50" action="{% url 'profile' %}" method="POST" enctype="multipart/form-data">
                                 {% csrf_token %}
@@ -54,7 +54,7 @@
                                 Address: {{ request.user.address }} <br>
                                 Mobile: {{ request.user.mobile }}
                             </p>
-                            <button class="msg-btn"><a style="color:white" class="" href="media/{{ request.user.nid_or_birth }}" target="_blank">NID or Birth</a></button>
+                            <button class="msg-btn"><a style="color:white" class="" href="/media/{{ request.user.nid_or_birth }}" target="_blank">NID or Birth</a></button>
                         </div>
                     </div>
                 </div>

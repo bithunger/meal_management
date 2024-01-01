@@ -8,6 +8,7 @@ import datetime as dateTime
 from user_dash import views
 from django.contrib.auth.decorators import login_required
 from .decorators import admin_required
+from datetime import datetime
 
 
 @login_required
@@ -114,6 +115,7 @@ def create_meal(request):
 def admin_dashboard(request):
     this_month = dateTime.date.today().month
     month = dateTime.date(1900, this_month, 1).strftime('%B')
+    year = datetime.now().year
     
     distinct_users = Daily_Meal.objects.filter(date__month=this_month).distinct().count()
     
@@ -138,6 +140,7 @@ def admin_dashboard(request):
         'meal_rate':round(m_rate, 7),
         'my_cost':m_cost,
         'month':month,
+        'year':year,
         'paid':paid,
         'distinct_users':distinct_users
     }
