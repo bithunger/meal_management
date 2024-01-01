@@ -1,6 +1,9 @@
 from django.contrib import admin
 from admin_dash.models import User, Meal, Daily_Bazar, Daily_Meal, Partial_Meal
 
+# class UserAdmin(admin.ModelAdmin):
+    # list_display = ('month', 'total_meal', 'meal_rate', 'total_bazar', 'total_mate', 'status')
+admin.site.register(User)
 
 class MealAdmin(admin.ModelAdmin):
     list_display = ('month', 'total_meal', 'meal_rate', 'total_bazar', 'total_mate', 'status')

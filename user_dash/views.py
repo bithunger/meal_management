@@ -8,6 +8,7 @@ import datetime as dateTime
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from admin_dash import views
 
 
 
@@ -150,7 +151,7 @@ def add_or_off_meal(request):
                     Daily_Meal.objects.create(user=request.user, date=tomorrow, dinner=-1)
                     
                 messages.success(request, f'Meal off successfully from { off_from }')
-                
+                views.meal_update(request)
             return redirect('total-meal')
         else:
             if User.objects.get(id=request.user.id).status is not True:
@@ -183,6 +184,7 @@ def add_or_off_meal(request):
             else:
                 Daily_Meal.objects.create(user=request.user, date=tomorrow, lunch=extra_meal_lunch, dinner=-1, comment=tomorrow_comment)
 
+            views.meal_update(request)
             messages.success(request, 'Meal updated successfully')
             return redirect("total-meal")
         
@@ -192,13 +194,13 @@ def add_or_off_meal(request):
 @login_required
 def partial_off_meal(request):
     partial_day_from = request.POST.get('partial_day_from')
-    partial_off_dinner = 1 if request.POST.get('partial_off_dinner') else 0
-    partial_off_lunch = 1 if request.POST.get('partial_off_lunch') else 0
+    partial_off_dinner = True if request.POST.get('partial_off_dinner') else False
+    partial_off_lunch = True if request.POST.get('partial_off_lunch') else False
     
     if partial_off_dinner:
-        Partial_Meal.objects.create(user=request.user, day=partial_day_from, meal=0)
-    else:
-        Partial_Meal.objects.create(user=request.user, day=partial_day_from, meal=1)
+        Partial_Meal.objects.create(user=request.user, day=partial_day_from, meal=0) # 0=dinner
+    elif partial_off_lunch:
+        Partial_Meal.objects.create(user=request.user, day=partial_day_from, meal=1) # 1=lunch
     
     messages.success(request, 'Partially meal of set')
     return redirect('manage-meal')
@@ -248,16 +250,21 @@ def total_bazar(request):
     return render(request, 'user_dashboard/total_bazar.html', {'this_month_bazar': this_month_bazar, 'this_month':month, 'total_bazar':total_bazar})
 
 
+@login_required
 def partial_delete(request, pk):
     p = Partial_Meal.objects.get(id=pk)
     p.delete()
     return redirect('manage-meal')
 
+
+@login_required
 def delete_all_meal(request):
     d = Daily_Meal.objects.all()
     d.delete()
     return redirect('total-meal')
 
+
+@login_required
 def delete_all_bazar(request):
     d = Daily_Bazar.objects.all()
     d.delete()

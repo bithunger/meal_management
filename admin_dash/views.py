@@ -11,17 +11,18 @@ from .decorators import admin_required
 from datetime import datetime
 
 
-@login_required
+# create meal for all in every day
+@admin_required
 def create_meal(request):
     today = dateTime.date.today()
     tomorrow = today + dateTime.timedelta(days=1)
-    day_of_week = today.weekday()
     day = today.strftime('%A')
     next_day = tomorrow.strftime('%A')
     
     users = User.objects.filter(status=True)
     status = 0
     for user in users:
+        # check meal was created for tomorrow or not
         if Daily_Meal.objects.filter(date=tomorrow, user=user).exists() is False:
             partial = Partial_Meal.objects.filter(user=user)
             dm = Daily_Meal.objects.filter(user=user, date=today).first()
@@ -31,8 +32,8 @@ def create_meal(request):
                 found_next_day = [item for item in partial if item.day==next_day and item.meal==1]
                 
                 if found_day:
-                    print('with-per-found-day')
-                    if found_day==0:
+                    print('with-per-found-day', found_day)
+                    if found_day==[0]:
                         print('with-per-found-day-0')
                         if dm:
                             print('with-per-found-day-0-dm')
@@ -41,7 +42,7 @@ def create_meal(request):
                         else:
                             print('with-per-found-day-0-dm-else')
                             Daily_Meal.objects.create(user=user, date=today, lunch=1, dinner=0)
-                    else:
+                    elif found_day==[1]:
                         print('with-per-found-day-1')
                         if dm:
                             print('with-per-found-day-1-dm')
@@ -50,6 +51,8 @@ def create_meal(request):
                         else:
                             print('with-per-found-day-1-dm-else')
                             Daily_Meal.objects.create(user=user, date=today, lunch=0, dinner=1)
+                    else:
+                        Daily_Meal.objects.create(user=user, date=today, lunch=0, dinner=0)
                 else:
                     if dm:
                         print('with-per-not-found-day-dm')
@@ -61,11 +64,11 @@ def create_meal(request):
                         Daily_Meal.objects.create(user=user, date=today, lunch=1, dinner=1)
                         
                 if found_next_day:
-                    print('with-per-found-next-day')
+                    print('with-per-not-found-next-day-1')
                     Daily_Meal.objects.create(user=user, date=tomorrow, lunch=0, dinner=-1)
                 else:
                     print('with-per-found-next-day-else')
-                    Daily_Meal.objects.create(user=user, date=tomorrow, lunch=1, dinner=-1)              
+                    Daily_Meal.objects.create(user=user, date=tomorrow, lunch=1, dinner=-1)             
             else:
                 print('without-per')
                 if dm:
@@ -83,34 +86,13 @@ def create_meal(request):
         messages.error(request, 'Meal already given in this date')
     else: messages.success(request, 'Meal created successfully for all')
     
-    # add meal model update
-    this_month = dateTime.date.today().month
-    month = dateTime.date(1900, this_month, 1).strftime('%B')
-    
-    total_meal = views.monthly_total_meal(this_month)
-    total_bazar = views.monthly_total_bazar(this_month)
-    
-    meal_rate = 0
-    if total_meal:
-        meal_rate = round(views.meal_rate(total_meal, total_bazar), 7)
-
-    distinct_users = Daily_Meal.objects.filter(date__month=this_month).distinct().count()
-    
-    meal = Meal.objects.filter(month=month).first()
-    # meal = Meal.objects.filter(date__month=this_month).first()
-    print(meal)
-    if meal:
-        meal.total_meal = total_meal
-        meal.total_bazar = total_bazar
-        meal.meal_rate = meal_rate
-        meal.total_mate = distinct_users
-        meal.save()
-    else:
-        Meal.objects.create(month=month, total_meal=total_meal, total_bazar=total_bazar, meal_rate=meal_rate, total_mate=distinct_users)
+    # add meal model or update
+    meal_update(request)
     
     return redirect('total-meal')
 
 
+# admin dashboard
 @admin_required
 def admin_dashboard(request):
     this_month = dateTime.date.today().month
@@ -147,4 +129,30 @@ def admin_dashboard(request):
     return render(request, 'admin_dashboard/index.html', context)
 
 
+# add meal model or update
+@admin_required
+def meal_update(request):
+    this_month = dateTime.date.today().month
+    month = dateTime.date(1900, this_month, 1).strftime('%B')
+    
+    total_meal = views.monthly_total_meal(this_month)
+    total_bazar = views.monthly_total_bazar(this_month)
+    
+    meal_rate = 0
+    if total_meal:
+        meal_rate = round(views.meal_rate(total_meal, total_bazar), 7)
 
+    distinct_users = Daily_Meal.objects.filter(date__month=this_month).distinct().count()
+    
+    meal = Meal.objects.filter(month=month).first()
+    # meal = Meal.objects.filter(date__month=this_month).first()
+    if meal:
+        meal.total_meal = total_meal
+        meal.total_bazar = total_bazar
+        meal.meal_rate = meal_rate
+        meal.total_mate = distinct_users
+        meal.save()
+    else:
+        meal = Meal.objects.create(month=month, total_meal=total_meal, total_bazar=total_bazar, meal_rate=meal_rate, total_mate=distinct_users)
+
+    return meal
